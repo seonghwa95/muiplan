@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,9 +21,20 @@ class PostControllerTest {
     @Test
     @DisplayName("/posts 요청시 Hello MUIPLAN!을 출력한다.")
     void test() throws Exception {
-        mockMvc.perform(get("/posts"))
+        mockMvc.perform(get("/tests"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Hello MUIPLAN!"))
                 .andDo(print()); // summary 확인
+    }
+
+    @Test
+    @DisplayName("/posts 요청시 Hello MUIPLAN!을 출력한다")
+    void test2() throws Exception {
+        mockMvc.perform(post("/tests")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"itemName\":\"화분\", \"itemPrice\": \"58000\"}"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Hello MUIPLAN!"))
+                .andDo(print());
     }
 }
