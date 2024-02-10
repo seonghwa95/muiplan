@@ -1,9 +1,13 @@
 package com.shop.muiplan.controller;
 
+import com.shop.muiplan.repository.PostRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -12,8 +16,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest
+@AutoConfigureMockMvc
+@SpringBootTest
 class PostControllerTest {
+
+    @Autowired
+    private PostRepository postRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,5 +44,22 @@ class PostControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Hello MUIPLAN!"))
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("/posts 요청시 DB에 값이 저장된다.")
+    void test3() throws Exception {
+        String jsonValue = "{\"itemName\":\"화분\", \"itemPrice\": \"58000\"}";
+
+        // when
+        mockMvc.perform(post("/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonValue)
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        assertEquals(1L, postRepository.count());
     }
 }
