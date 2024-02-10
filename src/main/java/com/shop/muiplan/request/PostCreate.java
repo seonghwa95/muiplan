@@ -1,10 +1,12 @@
 package com.shop.muiplan.request;
 
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class PostCreate {
 
     private String itemName;
-    private String itemPrice;
+    private Integer itemPrice;
 }
