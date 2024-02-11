@@ -2,6 +2,7 @@ package com.shop.muiplan.controller;
 
 import com.shop.muiplan.repository.PostRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,13 @@ class PostControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @BeforeEach
+    void clean() {
+        postRepository.deleteAll();
+    }
+
     @Test
-    @DisplayName("/posts 요청시 Hello MUIPLAN!을 출력한다.")
+    @DisplayName("/tests 요청시 Hello MUIPLAN!을 출력한다.")
     void test() throws Exception {
         mockMvc.perform(get("/tests"))
                 .andExpect(status().isOk())
@@ -38,11 +44,11 @@ class PostControllerTest {
     @Test
     @DisplayName("/posts 요청시 Hello MUIPLAN!을 출력한다(JSON 검증)")
     void test2() throws Exception {
-        mockMvc.perform(post("/tests")
+        mockMvc.perform(post("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"itemName\":\"화분\", \"itemPrice\": \"58000\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Hello MUIPLAN!"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
     }
 
