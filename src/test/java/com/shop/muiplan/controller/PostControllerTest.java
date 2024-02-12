@@ -1,5 +1,6 @@
 package com.shop.muiplan.controller;
 
+import com.shop.muiplan.domain.Item;
 import com.shop.muiplan.repository.PostRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,5 +68,10 @@ class PostControllerTest {
 
         // then
         assertEquals(1L, postRepository.count());
+
+        Item item = postRepository.findAll().get(0);
+
+        assertEquals("화분", item.getItemName());
+        assertEquals(58000, item.getItemPrice());
     }
 }
