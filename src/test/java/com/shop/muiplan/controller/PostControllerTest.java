@@ -45,6 +45,7 @@ class PostControllerTest {
     @Test
     @DisplayName("/posts 요청시 Hello MUIPLAN!을 출력한다(JSON 검증)")
     void test2() throws Exception {
+        // then
         mockMvc.perform(post("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"itemName\":\"화분\", \"itemPrice\": \"58000\"}"))
