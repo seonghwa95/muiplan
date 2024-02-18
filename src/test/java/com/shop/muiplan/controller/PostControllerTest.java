@@ -1,7 +1,9 @@
 package com.shop.muiplan.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shop.muiplan.domain.Item;
 import com.shop.muiplan.repository.PostRepository;
+import com.shop.muiplan.request.PostCreate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,10 +47,19 @@ class PostControllerTest {
     @Test
     @DisplayName("/posts 요청시 Hello MUIPLAN!을 출력한다(JSON 검증)")
     void test2() throws Exception {
+        // given
+        PostCreate request = new PostCreate("화분", 58000);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonValue = objectMapper.writeValueAsString(request);
+
+        System.out.println("jsonValue = " + jsonValue);
+
         // then
         mockMvc.perform(post("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"itemName\":\"화분\", \"itemPrice\": \"58000\"}"))
+                        .content(jsonValue)
+                )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
