@@ -48,7 +48,10 @@ class PostControllerTest {
     @DisplayName("/posts 요청시 Hello MUIPLAN!을 출력한다(JSON 검증)")
     void test2() throws Exception {
         // given
-        PostCreate request = new PostCreate("화분", 58000);
+        PostCreate request = PostCreate.builder()
+                .itemName("화분")
+                .itemPrice(58000)
+                .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonValue = objectMapper.writeValueAsString(request);
