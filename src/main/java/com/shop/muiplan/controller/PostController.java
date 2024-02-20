@@ -26,6 +26,7 @@ public class PostController {
     @PostMapping("/posts")
     public Map<String, String> post(@RequestBody PostCreate request) {
 
+        // 리턴 방식에 대한 수정? 및 이해? 필요
         postService.itemPost(request);
 
         return Map.of();
