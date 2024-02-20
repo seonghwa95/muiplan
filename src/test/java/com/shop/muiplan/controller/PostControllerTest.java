@@ -25,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PostControllerTest {
 
     @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
     private PostRepository postRepository;
 
     @Autowired
@@ -53,7 +56,6 @@ class PostControllerTest {
                 .itemPrice(58000)
                 .build();
 
-        ObjectMapper objectMapper = new ObjectMapper();
         String jsonValue = objectMapper.writeValueAsString(request);
 
         System.out.println("jsonValue = " + jsonValue);
