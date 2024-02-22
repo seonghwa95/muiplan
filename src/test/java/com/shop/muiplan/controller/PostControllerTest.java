@@ -71,7 +71,14 @@ class PostControllerTest {
     @Test
     @DisplayName("/posts 요청시 DB에 값이 저장된다.")
     void test3() throws Exception {
-        String jsonValue = "{\"itemName\":\"화분\", \"itemPrice\": \"58000\"}";
+        // given
+        PostCreate request = PostCreate.builder()
+                .itemName("화분")
+                .itemPrice(58000)
+                .build();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonValue = objectMapper.writeValueAsString(request);
 
         // when
         mockMvc.perform(post("/posts")

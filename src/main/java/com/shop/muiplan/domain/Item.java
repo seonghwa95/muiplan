@@ -8,9 +8,7 @@ import lombok.*;
 
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
-@Builder
 @Entity
 public class Item {
 
@@ -20,4 +18,11 @@ public class Item {
 
     private String itemName;
     private Integer itemPrice;
+
+    @Builder
+    public Item(Long id, String itemName, Integer itemPrice) {
+        this.id = id;
+        this.itemName = itemName;
+        this.itemPrice = itemPrice;
+    }
 }
