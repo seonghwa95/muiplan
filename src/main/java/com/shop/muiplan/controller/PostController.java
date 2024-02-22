@@ -2,6 +2,7 @@ package com.shop.muiplan.controller;
 
 import com.shop.muiplan.request.PostCreate;
 import com.shop.muiplan.service.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,7 @@ public class PostController {
     }
 
     @PostMapping("/posts")
-    public Map<String, String> post(@RequestBody PostCreate request) {
+    public Map<String, String> post(@RequestBody @Valid PostCreate request) {
 
         // 리턴 방식에 대한 수정? 및 이해? 필요
         postService.itemPost(request);
