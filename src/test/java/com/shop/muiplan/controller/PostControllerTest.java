@@ -48,6 +48,28 @@ class PostControllerTest {
     }
 
     @Test
+    @DisplayName("/posts 요청시 ItemName 값은 필수다.")
+    void itemNameValidTest() throws Exception {
+        // given
+        PostCreate request = PostCreate.builder()
+                .itemName(null)
+                .itemPrice(58000)
+                .build();
+
+        String jsonValue = objectMapper.writeValueAsString(request);
+
+        // then
+        mockMvc.perform(post("/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonValue)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
+                .andDo(print());
+    }
+
+    @Test
     @DisplayName("/posts 요청시 Hello MUIPLAN!을 출력한다(JSON 검증)")
     void test2() throws Exception {
         // given
