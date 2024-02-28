@@ -120,4 +120,24 @@ class PostControllerTest {
         assertEquals("화분", item.getItemName());
         assertEquals(58000, item.getItemPrice());
     }
+
+    @Test
+    @DisplayName("/posts/{id} 요청시 상품 상세 조히를 실시한다.")
+    void getOne() throws Exception {
+        // given
+        Item item = Item.builder()
+                .itemName("화분")
+                .itemPrice(58000)
+                .build();
+        postRepository.save(item);
+
+        // expected
+        mockMvc.perform(get("/posts/{id}", item.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(item.getId()))
+                .andExpect(jsonPath("$.itemName").value(item.getItemName()))
+                .andExpect(jsonPath("$.itemPrice").value(item.getItemPrice()))
+                .andDo(print());
+    }
 }
