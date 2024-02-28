@@ -1,14 +1,12 @@
 package com.shop.muiplan.controller;
 
+import com.shop.muiplan.domain.Item;
 import com.shop.muiplan.request.PostCreate;
 import com.shop.muiplan.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -25,11 +23,15 @@ public class PostController {
     }
 
     @PostMapping("/posts")
-    public Map<String, String> post(@RequestBody @Valid PostCreate request) {
+    public Item post(@RequestBody @Valid PostCreate request) {
 
-        // 리턴 방식에 대한 수정? 및 이해? 필요
-        postService.itemPost(request);
+        return postService.itemPost(request);
+    }
 
-        return Map.of();
+    @GetMapping("/posts/{id}")
+    public Item findItem(@PathVariable Long id) {
+        Item item = postService.get(id);
+
+        return item;
     }
 }
