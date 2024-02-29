@@ -4,17 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shop.muiplan.domain.Item;
 import com.shop.muiplan.repository.PostRepository;
 import com.shop.muiplan.request.PostCreate;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -139,5 +138,34 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.itemName").value(item.getItemName()))
                 .andExpect(jsonPath("$.itemPrice").value(item.getItemPrice()))
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("/items (GET) 요청시 전체 상품이 조회된다.")
+    void getAll() throws Exception {
+        // given
+        Item item1 = Item.builder()
+                .itemName("화분")
+                .itemPrice(58000)
+                .build();
+
+        Item item2 = Item.builder()
+                .itemName("식물")
+                .itemPrice(4000)
+                .build();
+
+        postRepository.save(item1);
+        postRepository.save(item2);
+
+        // expected
+        mockMvc.perform(get("/items")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(2)))
+                .andExpect(jsonPath("$[0].id").value(item1.getId()))
+                .andExpect(jsonPath("$[0].itemName").value(item1.getItemName()))
+                .andExpect(jsonPath("$[0].itemPrice").value(item1.getItemPrice()))
+                .andDo(print());
+
     }
 }

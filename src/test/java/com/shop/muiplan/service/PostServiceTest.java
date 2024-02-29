@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -68,5 +70,32 @@ class PostServiceTest {
         assertEquals(1L, postRepository.count());
         assertEquals("화분", response.getItemName());
         assertEquals(58000, response.getItemPrice());
+    }
+
+    @Test
+    @DisplayName("전체 상품 조회")
+    void getAllTest() {
+        // given
+        Item item1 = Item.builder()
+                .itemName("화분")
+                .itemPrice(58000)
+                .build();
+
+        Item item2 = Item.builder()
+                .itemName("식물")
+                .itemPrice(4000)
+                .build();
+
+        postRepository.save(item1);
+        postRepository.save(item2);
+
+        // when
+        List<PostResponse> itemList = postService.getList();
+
+        // then
+        assertNotNull(itemList);
+        assertEquals(2L, itemList.stream().count());
+        assertEquals("화분", itemList.get(0).getItemName());
+        assertEquals("식물", itemList.get(1).getItemName());
     }
 }
