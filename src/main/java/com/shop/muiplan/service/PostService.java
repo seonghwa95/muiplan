@@ -3,6 +3,7 @@ package com.shop.muiplan.service;
 import com.shop.muiplan.domain.Item;
 import com.shop.muiplan.repository.PostRepository;
 import com.shop.muiplan.request.PostCreate;
+import com.shop.muiplan.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,11 +27,17 @@ public class PostService {
         return postRepository.save(item);
     }
 
-    public Item get(Long id) {
+    public PostResponse get(Long id) {
         // Optional 은 바로 꺼내는 것을 추천
         Item item = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상풉입니다."));
 
-        return item;
+        PostResponse response = PostResponse.builder()
+                .id(item.getId())
+                .itemName(item.getItemName())
+                .itemPrice(item.getItemPrice())
+                .build();
+
+        return response;
     }
 }

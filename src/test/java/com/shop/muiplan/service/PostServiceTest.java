@@ -3,6 +3,7 @@ package com.shop.muiplan.service;
 import com.shop.muiplan.domain.Item;
 import com.shop.muiplan.repository.PostRepository;
 import com.shop.muiplan.request.PostCreate;
+import com.shop.muiplan.response.PostResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -60,12 +61,12 @@ class PostServiceTest {
         Long itemId = requestItem.getId();
 
         // when
-        Item item = postService.get(itemId);
+        PostResponse response = postService.get(itemId);
 
         // then
-        assertNotNull(item);
+        assertNotNull(response);
         assertEquals(1L, postRepository.count());
-        assertEquals("화분", item.getItemName());
-        assertEquals(58000, item.getItemPrice());
+        assertEquals("화분", response.getItemName());
+        assertEquals(58000, response.getItemPrice());
     }
 }

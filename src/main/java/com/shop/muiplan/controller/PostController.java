@@ -2,6 +2,7 @@ package com.shop.muiplan.controller;
 
 import com.shop.muiplan.domain.Item;
 import com.shop.muiplan.request.PostCreate;
+import com.shop.muiplan.response.PostResponse;
 import com.shop.muiplan.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +30,9 @@ public class PostController {
     }
 
     @GetMapping("/posts/{id}")
-    public Item findItem(@PathVariable Long id) {
-        Item item = postService.get(id);
+    public PostResponse findItem(@PathVariable Long id) {
+        PostResponse response = postService.get(id);
 
-        return item;
+        return response;
     }
 }
