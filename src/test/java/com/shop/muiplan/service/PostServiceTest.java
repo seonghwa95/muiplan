@@ -76,18 +76,16 @@ class PostServiceTest {
     @DisplayName("전체 상품 조회")
     void getAllTest() {
         // given
-        Item item1 = Item.builder()
-                .itemName("화분")
-                .itemPrice(58000)
-                .build();
-
-        Item item2 = Item.builder()
-                .itemName("식물")
-                .itemPrice(4000)
-                .build();
-
-        postRepository.save(item1);
-        postRepository.save(item2);
+        postRepository.saveAll(List.of(
+                Item.builder()
+                        .itemName("화분")
+                        .itemPrice(58000)
+                        .build(),
+                Item.builder()
+                        .itemName("식물")
+                        .itemPrice(400)
+                        .build()
+        ));
 
         // when
         List<PostResponse> itemList = postService.getList();
