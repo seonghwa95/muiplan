@@ -7,8 +7,10 @@ import com.shop.muiplan.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -34,5 +36,10 @@ public class PostController {
         PostResponse response = postService.get(id);
 
         return response;
+    }
+
+    @GetMapping("/items")
+    public List<PostResponse> findItems() {
+         return postService.getList();
     }
 }
