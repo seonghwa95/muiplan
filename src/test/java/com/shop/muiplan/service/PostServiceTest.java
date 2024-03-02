@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -95,5 +97,27 @@ class PostServiceTest {
         assertEquals(2L, itemList.stream().count());
         assertEquals("화분", itemList.get(0).getItemName());
         assertEquals("식물", itemList.get(1).getItemName());
+    }
+
+    @Test
+    @DisplayName("상품 1페이지 조회")
+    void getOnePageItem() {
+        // given
+        List<Item> request = IntStream.range(0, 30)
+                .mapToObj(i -> (
+                    Item.builder()
+                            .itemName("화분 " + i)
+                            .itemPrice(58000 + i)
+                            .build()))
+                .collect(Collectors.toList());
+        postRepository.saveAll(request);
+
+        // when
+        List<PostResponse> posts = postService.getPageList(1);
+
+        // then
+        assertEquals(5L, posts.size());
+        assertEquals("화분 5", posts.get(0).getItemName());
+
     }
 }
