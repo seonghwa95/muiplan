@@ -7,6 +7,7 @@ import com.shop.muiplan.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,8 +39,13 @@ public class PostController {
         return response;
     }
 
-    @GetMapping("/items")
+    @GetMapping("/itemsx")
     public List<PostResponse> findItems() {
          return postService.getList();
+    }
+
+    @GetMapping("/items")
+    public List<PostResponse> findItemsByPage(Pageable pageable) {
+        return postService.getPageList(pageable);
     }
 }
