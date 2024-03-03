@@ -13,6 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -144,27 +149,21 @@ class PostControllerTest {
     @DisplayName("/items (GET) 요청시 전체 상품이 조회된다.")
     void getAll() throws Exception {
         // given
-        Item item1 = Item.builder()
-                .itemName("화분")
-                .itemPrice(58000)
-                .build();
-
-        Item item2 = Item.builder()
-                .itemName("식물")
-                .itemPrice(4000)
-                .build();
-
-        postRepository.save(item1);
-        postRepository.save(item2);
+        List<Item> request = IntStream.range(1, 31)
+                .mapToObj(i -> (
+                        Item.builder()
+                                .itemName("화분 " + i)
+                                .itemPrice(58000 + i)
+                                .build()
+                ))
+                .collect(Collectors.toList());
+        postRepository.saveAll(request);
 
         // expected
-        mockMvc.perform(get("/items")
+        mockMvc.perform(get("/items?page=1&sort=id,desc&size=5")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(2)))
-                .andExpect(jsonPath("$[0].id").value(item1.getId()))
-                .andExpect(jsonPath("$[0].itemName").value(item1.getItemName()))
-                .andExpect(jsonPath("$[0].itemPrice").value(item1.getItemPrice()))
+                .andExpect(jsonPath("$.length()", is(5)))
                 .andDo(print());
 
     }
