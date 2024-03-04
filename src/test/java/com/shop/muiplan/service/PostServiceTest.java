@@ -101,7 +101,7 @@ class PostServiceTest {
     }
 
     @Test
-    @DisplayName("상품 1페이지 조회")
+    @DisplayName("상품 1페이지 조회 (Pageable)")
     void getOnePageItem() {
         // given
         List<Item> request = IntStream.range(1, 31)
@@ -124,5 +124,28 @@ class PostServiceTest {
 
         assertEquals(26L, posts.get(4).getId());
         assertEquals("화분 26", posts.get(4).getItemName());
+    }
+
+    @Test
+    @DisplayName("상품 1페이지 조회 (QueryDsl)")
+    void getOnePageItemQueryDsl() {
+        // given
+        List<Item> request = IntStream.range(1, 21)
+                .mapToObj(i -> (
+                    Item.builder()
+                            .itemName("화분 " + i)
+                            .itemPrice(58000 + i)
+                            .build()))
+                .collect(Collectors.toList());
+        postRepository.saveAll(request);
+
+        // when
+        List<PostResponse> posts = postService.getPageList(1);
+
+        // then
+        assertEquals(10L, posts.size());
+        assertEquals("화분 20", posts.get(0).getItemName());
+
+        assertEquals("화분 11", posts.get(9).getItemName());
     }
 }
