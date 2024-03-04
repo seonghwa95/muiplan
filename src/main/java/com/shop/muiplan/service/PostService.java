@@ -57,4 +57,10 @@ public class PostService {
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
     }
+
+    public List<PostResponse> getPageList(int page) {
+        return postRepository.getList(page).stream()
+                .map(PostResponse::new)
+                .collect(Collectors.toList());
+    }
 }
