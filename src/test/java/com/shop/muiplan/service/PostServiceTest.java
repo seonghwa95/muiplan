@@ -3,6 +3,7 @@ package com.shop.muiplan.service;
 import com.shop.muiplan.domain.Item;
 import com.shop.muiplan.repository.PostRepository;
 import com.shop.muiplan.request.PostCreate;
+import com.shop.muiplan.request.PostSearch;
 import com.shop.muiplan.response.PostResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,6 +142,34 @@ class PostServiceTest {
 
         // when
         List<PostResponse> posts = postService.getPageList(1);
+
+        // then
+        assertEquals(10L, posts.size());
+        assertEquals("화분 20", posts.get(0).getItemName());
+
+        assertEquals("화분 11", posts.get(9).getItemName());
+    }
+
+    @Test
+    @DisplayName("상품 1페이지 조회 (QueryDsl, requestDTO)")
+    void getOnePageItemQueryDslRequestDTO() {
+        // given
+        List<Item> request = IntStream.range(1, 21)
+                .mapToObj(i -> (
+                    Item.builder()
+                            .itemName("화분 " + i)
+                            .itemPrice(58000 + i)
+                            .build()))
+                .collect(Collectors.toList());
+        postRepository.saveAll(request);
+
+        PostSearch postSearch = PostSearch.builder()
+                .page(1)
+                .size(10)
+                .build();
+
+        // when
+        List<PostResponse> posts = postService.getPageList(postSearch);
 
         // then
         assertEquals(10L, posts.size());

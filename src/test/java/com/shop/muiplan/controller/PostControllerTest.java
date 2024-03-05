@@ -149,7 +149,7 @@ class PostControllerTest {
     @DisplayName("/items (GET) 요청시 전체 상품이 조회된다.")
     void getAll() throws Exception {
         // given
-        List<Item> request = IntStream.range(1, 31)
+        List<Item> request = IntStream.range(1, 21)
                 .mapToObj(i -> (
                         Item.builder()
                                 .itemName("화분 " + i)
@@ -160,11 +160,36 @@ class PostControllerTest {
         postRepository.saveAll(request);
 
         // expected
-        mockMvc.perform(get("/items?page=1&sort=id,desc`")
+        mockMvc.perform(get("/items?page=1&size=10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(5)))
+                .andExpect(jsonPath("$.length()", is(10)))
+                .andExpect(jsonPath("$[0].itemName").value("화분 20"))
+                .andExpect(jsonPath("$[0].itemPrice").value(58020))
                 .andDo(print());
+    }
 
+    @Test
+    @DisplayName("/items (GET) 전체 상품 조회시 page가 음수여도 첫페이지가 조회된다.")
+    void getAllEvenIfPageZero() throws Exception {
+        // given
+        List<Item> request = IntStream.range(1, 21)
+                .mapToObj(i -> (
+                        Item.builder()
+                                .itemName("화분 " + i)
+                                .itemPrice(58000 + i)
+                                .build()
+                ))
+                .collect(Collectors.toList());
+        postRepository.saveAll(request);
+
+        // expected
+        mockMvc.perform(get("/items?page=-1&size=10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(10)))
+                .andExpect(jsonPath("$[0].itemName").value("화분 20"))
+                .andExpect(jsonPath("$[0].itemPrice").value(58020))
+                .andDo(print());
     }
 }
