@@ -2,17 +2,15 @@ package com.shop.muiplan.controller;
 
 import com.shop.muiplan.domain.Item;
 import com.shop.muiplan.request.PostCreate;
+import com.shop.muiplan.request.PostSearch;
 import com.shop.muiplan.response.PostResponse;
 import com.shop.muiplan.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -45,7 +43,7 @@ public class PostController {
     }
 
     @GetMapping("/items")
-    public List<PostResponse> findItemsByPage(Pageable pageable) {
-        return postService.getPageList(pageable);
+    public List<PostResponse> findItemsByPage(@ModelAttribute PostSearch postSearch) {
+        return postService.getPageList(postSearch);
     }
 }
