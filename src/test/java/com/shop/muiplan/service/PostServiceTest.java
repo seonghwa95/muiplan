@@ -3,6 +3,7 @@ package com.shop.muiplan.service;
 import com.shop.muiplan.domain.Item;
 import com.shop.muiplan.repository.PostRepository;
 import com.shop.muiplan.request.PostCreate;
+import com.shop.muiplan.request.PostEdit;
 import com.shop.muiplan.request.PostSearch;
 import com.shop.muiplan.response.PostResponse;
 import org.junit.jupiter.api.*;
@@ -176,5 +177,49 @@ class PostServiceTest {
         assertEquals("화분 20", posts.get(0).getItemName());
 
         assertEquals("화분 11", posts.get(9).getItemName());
+    }
+
+    @Test
+    @DisplayName("아이템 이름 수정")
+    void itemNameEdit() {
+        // given
+        Item item = Item.builder()
+                .itemName("화분")
+                .itemPrice(58000)
+                .build();
+        postRepository.save(item);
+
+        PostEdit postEdit = PostEdit.builder()
+                .itemName("화분 퍼즐팟")
+                .itemPrice(58000)
+                .build();
+
+        // when
+        postService.edit(item.getId(), postEdit);
+
+        // then
+        Item changedItem = postRepository.findById(item.getId())
+                .orElseThrow(() -> new RuntimeException("해당 아이템 이름이 존재하지 않습니다. id= " + item.getId()));
+
+        assertEquals("화분 퍼즐팟", changedItem.getItemName());
+        assertEquals(58000, changedItem.getItemPrice());
+    }
+
+    @Test
+    @DisplayName("아이템 삭제")
+    void itemDelete() {
+        // given
+        Item item = Item.builder()
+                .itemName("화분")
+                .itemPrice(58000)
+                .build();
+        postRepository.save(item);
+
+        // when
+        postService.delete(item.getId());
+
+        // then
+        assertEquals(0L, postRepository.count());
+
     }
 }

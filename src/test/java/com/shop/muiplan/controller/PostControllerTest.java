@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shop.muiplan.domain.Item;
 import com.shop.muiplan.repository.PostRepository;
 import com.shop.muiplan.request.PostCreate;
+import com.shop.muiplan.request.PostEdit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -190,6 +191,48 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.length()", is(10)))
                 .andExpect(jsonPath("$[0].itemName").value("화분 20"))
                 .andExpect(jsonPath("$[0].itemPrice").value(58020))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("/items/{id} (Patch) 요청시 아이템 정보를 수정한다.")
+    void putItemNameUpdate() throws Exception {
+        // given
+        Item item = Item.builder()
+                .itemName("화분")
+                .itemPrice(58000)
+                .build();
+        postRepository.save(item);
+
+        PostEdit postEdit = PostEdit.builder()
+                .itemName("화분 퍼즐 팟")
+                .itemPrice(58000)
+                .build();
+
+        // then
+        mockMvc.perform(patch("/items/{id}", item.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(postEdit))
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("/items/{id} (delete) 요청시 아이템 정보를 삭제한다")
+    void ItemDelete() throws Exception {
+        // given
+        Item item = Item.builder()
+                .itemName("화분")
+                .itemPrice(58000)
+                .build();
+        postRepository.save(item);
+
+        // expected
+        mockMvc.perform(delete("/items/{id}", item.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 }
