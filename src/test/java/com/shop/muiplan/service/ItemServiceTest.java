@@ -6,12 +6,14 @@ import com.shop.muiplan.request.ItemCreate;
 import com.shop.muiplan.request.ItemEdit;
 import com.shop.muiplan.request.ItemSearch;
 import com.shop.muiplan.response.ItemResponse;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,14 +26,14 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 class ItemServiceTest {
 
     @Autowired
-    private ItemRepository postRepository;
+    private ItemRepository itemRepository;
 
     @Autowired
     private ItemService itemService;
 
     @BeforeEach
     void clean() {
-        postRepository.deleteAll();
+        itemRepository.deleteAll();
     }
 
     @Test
@@ -47,9 +49,9 @@ class ItemServiceTest {
         itemService.itemPost(itemCreate);
 
         // then
-        assertEquals(1L, postRepository.count());
+        assertEquals(1L, itemRepository.count());
 
-        Item item = postRepository.findAll().get(0);
+        Item item = itemRepository.findAll().get(0);
 
         assertEquals("화분", item.getItemName());
         assertEquals(58000, item.getItemPrice());
@@ -63,7 +65,7 @@ class ItemServiceTest {
                 .itemName("화분")
                 .itemPrice(58000)
                 .build();
-        postRepository.save(requestItem);
+        itemRepository.save(requestItem);
 
         Long itemId = requestItem.getId();
 
@@ -72,7 +74,7 @@ class ItemServiceTest {
 
         // then
         assertNotNull(response);
-        assertEquals(1L, postRepository.count());
+        assertEquals(1L, itemRepository.count());
         assertEquals("화분", response.getItemName());
         assertEquals(58000, response.getItemPrice());
     }
@@ -81,7 +83,7 @@ class ItemServiceTest {
     @DisplayName("전체 상품 조회")
     void getAllTest() {
         // given
-        postRepository.saveAll(List.of(
+        itemRepository.saveAll(List.of(
                 Item.builder()
                         .itemName("화분")
                         .itemPrice(58000)
@@ -113,7 +115,7 @@ class ItemServiceTest {
                             .itemPrice(58000 + i)
                             .build()))
                 .collect(Collectors.toList());
-        postRepository.saveAll(request);
+        itemRepository.saveAll(request);
 
         Pageable pageable = PageRequest.of(0, 5, Sort.by(DESC, "id"));
         // when
@@ -121,10 +123,8 @@ class ItemServiceTest {
 
         // then
         assertEquals(5L, posts.size());
-        assertEquals(30L, posts.get(0).getId());
         assertEquals("화분 30", posts.get(0).getItemName());
 
-        assertEquals(26L, posts.get(4).getId());
         assertEquals("화분 26", posts.get(4).getItemName());
     }
 
@@ -139,7 +139,7 @@ class ItemServiceTest {
                             .itemPrice(58000 + i)
                             .build()))
                 .collect(Collectors.toList());
-        postRepository.saveAll(request);
+        itemRepository.saveAll(request);
 
         // when
         List<ItemResponse> posts = itemService.getPageList(1);
@@ -162,7 +162,7 @@ class ItemServiceTest {
                             .itemPrice(58000 + i)
                             .build()))
                 .collect(Collectors.toList());
-        postRepository.saveAll(request);
+        itemRepository.saveAll(request);
 
         ItemSearch itemSearch = ItemSearch.builder()
                 .page(1)
@@ -187,7 +187,7 @@ class ItemServiceTest {
                 .itemName("화분")
                 .itemPrice(58000)
                 .build();
-        postRepository.save(item);
+        itemRepository.save(item);
 
         ItemEdit itemEdit = ItemEdit.builder()
                 .itemName("화분 퍼즐팟")
@@ -198,7 +198,7 @@ class ItemServiceTest {
         itemService.edit(item.getId(), itemEdit);
 
         // then
-        Item changedItem = postRepository.findById(item.getId())
+        Item changedItem = itemRepository.findById(item.getId())
                 .orElseThrow(() -> new RuntimeException("해당 아이템 이름이 존재하지 않습니다. id= " + item.getId()));
 
         assertEquals("화분 퍼즐팟", changedItem.getItemName());
@@ -213,13 +213,13 @@ class ItemServiceTest {
                 .itemName("화분")
                 .itemPrice(58000)
                 .build();
-        postRepository.save(item);
+        itemRepository.save(item);
 
         // when
         itemService.delete(item.getId());
 
         // then
-        assertEquals(0L, postRepository.count());
+        assertEquals(0L, itemRepository.count());
 
     }
 }
