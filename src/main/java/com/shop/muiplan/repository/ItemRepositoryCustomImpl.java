@@ -3,13 +3,13 @@ package com.shop.muiplan.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shop.muiplan.domain.Item;
 import com.shop.muiplan.domain.QItem;
-import com.shop.muiplan.request.PostSearch;
+import com.shop.muiplan.request.ItemSearch;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-public class PostRepositoryCustomImpl implements PostRepositoryCustom{
+public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -23,10 +23,10 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom{
     }
 
     @Override
-    public List<Item> getList(PostSearch postSearch) {
+    public List<Item> getList(ItemSearch itemSearch) {
         return jpaQueryFactory.selectFrom(QItem.item)
-                .limit(postSearch.getSize())
-                .offset(postSearch.getOffset())
+                .limit(itemSearch.getSize())
+                .offset(itemSearch.getOffset())
                 .orderBy(QItem.item.id.desc())
                 .fetch();
     }

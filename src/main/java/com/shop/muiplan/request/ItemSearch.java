@@ -10,7 +10,7 @@ import static java.lang.Math.min;
 @Getter
 @Setter
 @Builder
-public class PostSearch {
+public class ItemSearch {
 
     private static final int MAX_SIZE = 2000;
 

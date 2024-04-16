@@ -1,11 +1,11 @@
 package com.shop.muiplan.service;
 
 import com.shop.muiplan.domain.Item;
-import com.shop.muiplan.repository.PostRepository;
-import com.shop.muiplan.request.PostCreate;
-import com.shop.muiplan.request.PostEdit;
-import com.shop.muiplan.request.PostSearch;
-import com.shop.muiplan.response.PostResponse;
+import com.shop.muiplan.repository.ItemRepository;
+import com.shop.muiplan.request.ItemCreate;
+import com.shop.muiplan.request.ItemEdit;
+import com.shop.muiplan.request.ItemSearch;
+import com.shop.muiplan.response.ItemResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,13 +21,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @SpringBootTest
-class PostServiceTest {
+class ItemServiceTest {
 
     @Autowired
-    private PostRepository postRepository;
+    private ItemRepository postRepository;
 
     @Autowired
-    private PostService postService;
+    private ItemService itemService;
 
     @BeforeEach
     void clean() {
@@ -38,13 +38,13 @@ class PostServiceTest {
     @DisplayName("상품 등록")
     void itemPost() {
         // given
-        PostCreate postCreate = PostCreate.builder()
+        ItemCreate itemCreate = ItemCreate.builder()
                 .itemName("화분")
                 .itemPrice(58000)
                 .build();
 
         // when
-        postService.itemPost(postCreate);
+        itemService.itemPost(itemCreate);
 
         // then
         assertEquals(1L, postRepository.count());
@@ -68,7 +68,7 @@ class PostServiceTest {
         Long itemId = requestItem.getId();
 
         // when
-        PostResponse response = postService.get(itemId);
+        ItemResponse response = itemService.get(itemId);
 
         // then
         assertNotNull(response);
@@ -93,7 +93,7 @@ class PostServiceTest {
         ));
 
         // when
-        List<PostResponse> itemList = postService.getList();
+        List<ItemResponse> itemList = itemService.getList();
 
         // then
         assertNotNull(itemList);
@@ -117,7 +117,7 @@ class PostServiceTest {
 
         Pageable pageable = PageRequest.of(0, 5, Sort.by(DESC, "id"));
         // when
-        List<PostResponse> posts = postService.getPageList(pageable);
+        List<ItemResponse> posts = itemService.getPageList(pageable);
 
         // then
         assertEquals(5L, posts.size());
@@ -142,7 +142,7 @@ class PostServiceTest {
         postRepository.saveAll(request);
 
         // when
-        List<PostResponse> posts = postService.getPageList(1);
+        List<ItemResponse> posts = itemService.getPageList(1);
 
         // then
         assertEquals(10L, posts.size());
@@ -164,13 +164,13 @@ class PostServiceTest {
                 .collect(Collectors.toList());
         postRepository.saveAll(request);
 
-        PostSearch postSearch = PostSearch.builder()
+        ItemSearch itemSearch = ItemSearch.builder()
                 .page(1)
                 .size(10)
                 .build();
 
         // when
-        List<PostResponse> posts = postService.getPageList(postSearch);
+        List<ItemResponse> posts = itemService.getPageList(itemSearch);
 
         // then
         assertEquals(10L, posts.size());
@@ -189,13 +189,13 @@ class PostServiceTest {
                 .build();
         postRepository.save(item);
 
-        PostEdit postEdit = PostEdit.builder()
+        ItemEdit itemEdit = ItemEdit.builder()
                 .itemName("화분 퍼즐팟")
                 .itemPrice(58000)
                 .build();
 
         // when
-        postService.edit(item.getId(), postEdit);
+        itemService.edit(item.getId(), itemEdit);
 
         // then
         Item changedItem = postRepository.findById(item.getId())
@@ -216,7 +216,7 @@ class PostServiceTest {
         postRepository.save(item);
 
         // when
-        postService.delete(item.getId());
+        itemService.delete(item.getId());
 
         // then
         assertEquals(0L, postRepository.count());

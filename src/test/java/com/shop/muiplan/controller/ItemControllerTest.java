@@ -2,9 +2,9 @@ package com.shop.muiplan.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shop.muiplan.domain.Item;
-import com.shop.muiplan.repository.PostRepository;
-import com.shop.muiplan.request.PostCreate;
-import com.shop.muiplan.request.PostEdit;
+import com.shop.muiplan.repository.ItemRepository;
+import com.shop.muiplan.request.ItemCreate;
+import com.shop.muiplan.request.ItemEdit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,13 +26,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-class PostControllerTest {
+class ItemControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
-    private PostRepository postRepository;
+    private ItemRepository postRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,7 +55,7 @@ class PostControllerTest {
     @DisplayName("/posts 요청시 ItemName 값은 필수다.")
     void itemNameValidTest() throws Exception {
         // given
-        PostCreate request = PostCreate.builder()
+        ItemCreate request = ItemCreate.builder()
                 .itemName(null)
                 .itemPrice(58000)
                 .build();
@@ -78,7 +77,7 @@ class PostControllerTest {
     @DisplayName("/posts 요청시 Hello MUIPLAN!을 출력한다(JSON 검증)")
     void test2() throws Exception {
         // given
-        PostCreate request = PostCreate.builder()
+        ItemCreate request = ItemCreate.builder()
                 .itemName("화분")
                 .itemPrice(58000)
                 .build();
@@ -101,7 +100,7 @@ class PostControllerTest {
     @DisplayName("/posts 요청시 DB에 값이 저장된다.")
     void test3() throws Exception {
         // given
-        PostCreate request = PostCreate.builder()
+        ItemCreate request = ItemCreate.builder()
                 .itemName("화분")
                 .itemPrice(58000)
                 .build();
@@ -204,7 +203,7 @@ class PostControllerTest {
                 .build();
         postRepository.save(item);
 
-        PostEdit postEdit = PostEdit.builder()
+        ItemEdit itemEdit = ItemEdit.builder()
                 .itemName("화분 퍼즐 팟")
                 .itemPrice(58000)
                 .build();
@@ -212,7 +211,7 @@ class PostControllerTest {
         // then
         mockMvc.perform(patch("/items/{id}", item.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(postEdit))
+                        .content(objectMapper.writeValueAsString(itemEdit))
                 )
                 .andExpect(status().isOk())
                 .andDo(print());
