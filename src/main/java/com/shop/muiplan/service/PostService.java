@@ -3,6 +3,7 @@ package com.shop.muiplan.service;
 import com.shop.muiplan.domain.Item;
 import com.shop.muiplan.repository.PostRepository;
 import com.shop.muiplan.request.PostCreate;
+import com.shop.muiplan.request.PostEdit;
 import com.shop.muiplan.request.PostSearch;
 import com.shop.muiplan.response.PostResponse;
 import lombok.RequiredArgsConstructor;
@@ -66,5 +67,24 @@ public class PostService {
         return postRepository.getList(postSearch).stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    public Item edit(Long id, PostEdit postEdit) {
+        Item item = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+
+        // 해당 수정 방식에서 파라미터 갯수가 매우 많아질 경우..는 어떻게 할지 고민해보기
+        item.change(postEdit.getItemName(), postEdit.getItemPrice());
+
+        postRepository.save(item);
+
+        return item;
+    }
+
+    public void delete(Long id) {
+        Item item = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+
+        postRepository.delete(item);
     }
 }

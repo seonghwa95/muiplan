@@ -2,6 +2,7 @@ package com.shop.muiplan.controller;
 
 import com.shop.muiplan.domain.Item;
 import com.shop.muiplan.request.PostCreate;
+import com.shop.muiplan.request.PostEdit;
 import com.shop.muiplan.request.PostSearch;
 import com.shop.muiplan.response.PostResponse;
 import com.shop.muiplan.service.PostService;
@@ -46,4 +47,16 @@ public class PostController {
     public List<PostResponse> findItemsByPage(@ModelAttribute PostSearch postSearch) {
         return postService.getPageList(postSearch);
     }
+
+    @PatchMapping("/items/{id}")
+    public Item edit(@PathVariable Long id, @RequestBody @Valid PostEdit postEdit) {
+        // 만약 프론트에서 변경하지 않은 기존 내용은 null로 보낸다면??
+        return postService.edit(id, postEdit);
+    }
+
+    @DeleteMapping("/items/{id}")
+    public void deleteItem(@PathVariable Long id) {
+        postService.delete(id);
+    }
+
 }

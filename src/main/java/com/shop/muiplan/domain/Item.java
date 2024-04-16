@@ -25,4 +25,9 @@ public class Item {
         this.itemName = itemName;
         this.itemPrice = itemPrice;
     }
+
+    public void change(String itemName, Integer itemPrice) {
+        this.itemName = itemName;
+        this.itemPrice = itemPrice;
+    }
 }
